@@ -89,7 +89,7 @@ export default function SearchFilters({ query, filters }: SearchFiltersProps) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors w-full justify-center"
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full justify-center text-gray-900 dark:text-gray-100"
         >
           <Filter className="w-4 h-4" />
           <span>Filters & Sort</span>
@@ -116,12 +116,12 @@ export default function SearchFilters({ query, filters }: SearchFiltersProps) {
       {isOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-semibold">Filters & Sort</h3>
+          <div className="absolute right-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-xl overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Filters & Sort</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -176,7 +176,7 @@ function FilterContent({
       {/* Clear Filters */}
       {hasActiveFilters && (
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-800">Filters</h3>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Filters</h3>
           <button
             onClick={() => {
               onClearFilters()
@@ -190,8 +190,8 @@ function FilterContent({
       )}
 
       {/* Category Filter */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h4 className="font-medium text-gray-700 mb-3">Category</h4>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-3">Category</h4>
         <div className="space-y-2">
           {categories.map((category) => (
             <label key={category.value} className="flex items-center gap-3 cursor-pointer">
@@ -204,17 +204,17 @@ function FilterContent({
                   onFilterChange('category', e.target.value)
                   onClose?.()
                 }}
-                className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                className="w-4 h-4 text-primary border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-amber-400 dark:bg-gray-700"
               />
-              <span className="text-sm text-gray-700">{category.label}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">{category.label}</span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Content Type Filter */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h4 className="font-medium text-gray-700 mb-3">Content Type</h4>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-3">Content Type</h4>
         <div className="space-y-2">
           {contentTypes.map((type) => (
             <label key={type.value} className="flex items-center gap-3 cursor-pointer">
@@ -227,17 +227,17 @@ function FilterContent({
                   onFilterChange('content_type', e.target.value)
                   onClose?.()
                 }}
-                className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                className="w-4 h-4 text-primary border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-amber-400 dark:bg-gray-700"
               />
-              <span className="text-sm text-gray-700">{type.label}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">{type.label}</span>
             </label>
           ))}
         </div>
       </div>
 
       {/* Sort Options */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <h4 className="font-medium text-gray-700 mb-3">Sort by</h4>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-3">Sort by</h4>
         <div className="space-y-2">
           {sortOptions.map((option) => (
             <label key={`${option.value}-${option.order}`} className="flex items-center gap-3 cursor-pointer">
@@ -253,9 +253,9 @@ function FilterContent({
                   onFilterChange('order', option.order)
                   onClose?.()
                 }}
-                className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                className="w-4 h-4 text-primary border-gray-300 dark:border-gray-600 focus:ring-primary dark:focus:ring-amber-400 dark:bg-gray-700"
               />
-              <span className="text-sm text-gray-700">{option.label}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300">{option.label}</span>
             </label>
           ))}
         </div>

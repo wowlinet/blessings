@@ -164,14 +164,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     : null
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <CategoryHeader 
         category={category} 
         selectedSubcategory={selectedSubcategory}
         totalCount={totalCount}
       />
       
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 bg-transparent dark:bg-gray-900">
         <SubcategoryTabs 
           category={category}
           selectedSubcategory={resolvedSearchParams.subcategory}
@@ -183,7 +183,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             categorySlug={category.slug}
           />
           
-          <div className="flex-1">
+          <div className="flex-1 bg-transparent dark:bg-gray-900">
             <BlessingGrid 
               blessings={blessings}
               totalCount={totalCount}

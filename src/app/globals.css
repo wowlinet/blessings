@@ -32,7 +32,7 @@ body {
 }
 
 .hero-gradient {
-  background: linear-gradient(135deg, #f7b801 0%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #FFF7E0 0%, #FFE6B3 50%, #FFD89B 100%);
 }
 
 .card-shadow {

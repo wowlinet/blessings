@@ -25,7 +25,7 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
 
   if (!featuredBlessings.length) {
     return (
-      <section className="hero-gradient min-h-[60vh] flex items-center justify-center text-white">
+      <section className="hero-gradient min-h-[60vh] flex items-center justify-center text-amber-900">
         <div className="text-center px-4">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 font-crimson">
             Welcome to BlessYou.Today
@@ -41,12 +41,12 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
   const currentBlessing = featuredBlessings[currentBlessingIndex]
 
   return (
-    <section className="hero-gradient min-h-[70vh] flex items-center justify-center text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/20"></div>
+    <section className="hero-gradient min-h-[70vh] flex items-center justify-center text-amber-900 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF7E0]/30 via-[#FFE6B3]/20 to-[#FFD89B]/10"></div>
       
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <div className="mb-8">
-          <span className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <span className="inline-block bg-amber-100/60 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium mb-4 text-amber-800">
             Today&apos;s Featured Blessing
           </span>
           <h1 className="text-3xl md:text-5xl font-bold mb-6 font-crimson leading-tight">
@@ -54,12 +54,12 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
           </h1>
         </div>
 
-        <div className="blessing-content bg-white/10 backdrop-blur-sm rounded-2xl p-8 md:p-12 mb-8 border border-white/20">
+        <div className="blessing-content bg-amber-50/40 backdrop-blur-sm rounded-2xl p-8 md:p-12 mb-8 border border-amber-200/30">
           <blockquote className="text-lg md:text-xl leading-relaxed font-crimson italic">
             &ldquo;{currentBlessing.content}&rdquo;
           </blockquote>
           {currentBlessing.author && (
-            <cite className="block mt-4 text-sm opacity-80 not-italic">
+            <cite className="block mt-4 text-sm opacity-70 not-italic text-amber-700">
               — {currentBlessing.author}
             </cite>
           )}
@@ -68,13 +68,13 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <button
             onClick={() => setShowShareModal(true)}
-            className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-full transition-all duration-300 border border-white/20"
+            className="flex items-center gap-2 bg-amber-100/50 hover:bg-amber-100/70 backdrop-blur-sm px-6 py-3 rounded-full transition-all duration-300 border border-amber-200/40 text-amber-800"
           >
             <Share2 size={18} />
             Share This Blessing
           </button>
           
-          <div className="flex items-center gap-2 text-sm opacity-80">
+          <div className="flex items-center gap-2 text-sm opacity-70 text-amber-700">
             <Heart size={16} />
             <span>{currentBlessing.share_count || 0} shares</span>
           </div>
@@ -88,8 +88,8 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
                 onClick={() => setCurrentBlessingIndex(index)}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentBlessingIndex
-                    ? 'bg-white'
-                    : 'bg-white/40 hover:bg-white/60'
+                    ? 'bg-amber-800'
+                    : 'bg-amber-600/60 hover:bg-amber-700/80'
                 }`}
               />
             ))}

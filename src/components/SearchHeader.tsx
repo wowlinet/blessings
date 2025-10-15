@@ -31,13 +31,13 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
   }
 
   return (
-    <section className="bg-gradient-to-r from-amber-400 to-blue-600 text-white py-12">
+    <section className="hero-gradient text-amber-900 py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold font-crimson mb-4">
             Search Blessings
           </h1>
-          <p className="text-lg opacity-90">
+          <p className="text-lg text-amber-700">
             Find the perfect blessing for any moment in life
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for blessings, prayers, or keywords..."
-              className="w-full px-6 py-4 pr-24 text-gray-800 bg-white rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-white/30 text-lg"
+              className="w-full px-6 py-4 pr-24 text-gray-800 bg-white rounded-full shadow-lg focus:outline-none focus:ring-4 focus:ring-amber-200/50 text-lg"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
               {query && (
@@ -64,7 +64,7 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
               )}
               <button
                 type="submit"
-                className="bg-amber-500 text-white p-3 rounded-full hover:bg-amber-600 transition-colors shadow-lg"
+                className="bg-amber-600 text-white p-3 rounded-full hover:bg-amber-700 transition-colors shadow-lg"
               >
                 <Search className="w-5 h-5" />
               </button>
@@ -75,15 +75,15 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
         {/* Search Results Summary */}
         {initialQuery && (
           <div className="text-center">
-            <p className="text-lg opacity-90">
+            <p className="text-lg text-amber-700">
               {totalResults > 0 ? (
                 <>
-                  Found <span className="font-semibold">{totalResults}</span> results for{' '}
-                  <span className="font-semibold">"{initialQuery}"</span>
+                  Found <span className="font-semibold text-amber-800">{totalResults}</span> results for{' '}
+                  <span className="font-semibold text-amber-800">"{initialQuery}"</span>
                 </>
               ) : (
                 <>
-                  No results found for <span className="font-semibold">"{initialQuery}"</span>
+                  No results found for <span className="font-semibold text-amber-800">"{initialQuery}"</span>
                 </>
               )}
             </p>
@@ -93,7 +93,7 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
         {/* Popular Searches */}
         {!initialQuery && (
           <div className="text-center">
-            <p className="text-sm opacity-75 mb-3">Popular searches:</p>
+            <p className="text-sm text-amber-700 mb-3">Popular searches:</p>
             <div className="flex flex-wrap justify-center gap-2">
               {[
                 'morning blessings',
@@ -110,7 +110,7 @@ export default function SearchHeader({ initialQuery, totalResults }: SearchHeade
                     setQuery(term)
                     router.push(`/search?q=${encodeURIComponent(term)}`)
                   }}
-                  className="px-3 py-1 bg-white/20 rounded-full text-sm hover:bg-white/30 transition-colors"
+                  className="px-3 py-1 bg-amber-100/50 backdrop-blur-sm rounded-full text-sm hover:bg-amber-100/70 transition-colors border border-amber-200/40 text-amber-800"
                 >
                   {term}
                 </button>

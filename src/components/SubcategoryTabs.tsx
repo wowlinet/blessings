@@ -59,17 +59,17 @@ export default function SubcategoryTabs({
   ]
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       {/* Subcategory Tabs */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Browse by Subcategory</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Browse by Subcategory</h3>
         <div className="flex flex-wrap gap-2 justify-start">
           <button
             onClick={() => handleSubcategoryChange()}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
               !selectedSubcategory
                 ? 'bg-amber-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
             All {category.name}
@@ -82,7 +82,7 @@ export default function SubcategoryTabs({
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
                 selectedSubcategory === subcategory.slug
                   ? 'bg-amber-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {subcategory.name}
@@ -93,7 +93,7 @@ export default function SubcategoryTabs({
 
       {/* Content Type Filter */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Filter by Content Type</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Filter by Content Type</h3>
         <div className="flex flex-wrap gap-2 justify-start">
           {contentTypes.map((type) => (
             <button
@@ -101,8 +101,8 @@ export default function SubcategoryTabs({
               onClick={() => handleContentTypeChange(type.value || undefined)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
                 selectedContentType === type.value || (!selectedContentType && type.value === '')
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
               {type.label}

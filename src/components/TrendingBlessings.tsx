@@ -13,13 +13,13 @@ export default function TrendingBlessings({ blessings }: TrendingBlessingsProps)
   }
 
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 font-crimson">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary dark:text-white mb-4 font-crimson">
             Trending Blessings
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Discover the most loved and shared blessings from our community
           </p>
         </div>
@@ -33,7 +33,7 @@ export default function TrendingBlessings({ blessings }: TrendingBlessingsProps)
         <div className="text-center">
           <Link
             href="/search"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-colors duration-300"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 dark:bg-amber-600 dark:hover:bg-amber-700 text-white px-8 py-3 rounded-full font-medium transition-colors duration-300"
           >
             Explore All Blessings
           </Link>

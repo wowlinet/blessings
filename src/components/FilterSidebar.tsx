@@ -57,12 +57,12 @@ export default function FilterSidebar({ categorySlug }: FilterSidebarProps) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-900 dark:text-white"
         >
           <Filter className="w-4 h-4" />
           <span>Filters & Sort</span>
           {hasActiveFilters && (
-            <span className="w-2 h-2 bg-primary-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
           )}
         </button>
       </div>
@@ -83,12 +83,12 @@ export default function FilterSidebar({ categorySlug }: FilterSidebarProps) {
       {isOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-semibold">Filters & Sort</h3>
+          <div className="absolute right-0 top-0 h-full w-80 bg-white dark:bg-gray-900 shadow-xl">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Filters & Sort</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-500 dark:text-gray-400"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -131,16 +131,16 @@ function FilterContent({
   onClose 
 }: FilterContentProps) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">Sort & Filter</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Sort & Filter</h3>
         {hasActiveFilters && (
           <button
             onClick={() => {
               onClearFilters()
               onClose?.()
             }}
-            className="text-sm text-primary-400 hover:text-primary-500 transition-colors"
+            className="text-sm text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
           >
             Clear All
           </button>
@@ -149,7 +149,7 @@ function FilterContent({
 
       {/* Sort Options */}
       <div className="space-y-3">
-        <h4 className="font-medium text-gray-700">Sort by</h4>
+        <h4 className="font-medium text-gray-700 dark:text-gray-300">Sort by</h4>
         {sortOptions.map((option) => (
           <label key={`${option.value}-${option.order}`} className="flex items-center gap-3 cursor-pointer">
             <input
@@ -160,23 +160,23 @@ function FilterContent({
                 onSortChange(option.value, option.order)
                 onClose?.()
               }}
-              className="w-4 h-4 text-primary-400 border-gray-300 focus:ring-primary-400"
+              className="w-4 h-4 text-amber-500 border-gray-300 dark:border-gray-600 focus:ring-amber-500 dark:bg-gray-700"
             />
-            <span className="text-sm text-gray-700">{option.label}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300">{option.label}</span>
           </label>
         ))}
       </div>
 
       {/* Additional Filters */}
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <h4 className="font-medium text-gray-700 mb-3">Quick Filters</h4>
+      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Quick Filters</h4>
         <div className="space-y-2">
           <button 
             onClick={() => {
               onSortChange('is_featured', 'desc')
               onClose?.()
             }}
-            className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+            className="block w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
           >
             Featured Only
           </button>
@@ -185,7 +185,7 @@ function FilterContent({
               onSortChange('share_count', 'desc')
               onClose?.()
             }}
-            className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+            className="block w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
           >
             Most Popular
           </button>
