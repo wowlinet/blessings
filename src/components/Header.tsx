@@ -150,7 +150,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search blessings..."
-                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full bg-white text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
+                className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full bg-white text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary transition-all duration-300"
               />
               <button
                 type="submit"
