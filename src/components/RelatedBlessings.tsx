@@ -21,7 +21,9 @@ export default async function RelatedBlessings({
         subcategory_id: subcategorySlug,
         limit: 4
       })
-      relatedBlessings = subcategoryResults.filter(b => b.id !== currentBlessingId)
+      relatedBlessings = Array.isArray(subcategoryResults) 
+        ? subcategoryResults.filter(b => b.id !== currentBlessingId)
+        : []
     }
     
     // If we don't have enough from subcategory, get from category
@@ -30,10 +32,12 @@ export default async function RelatedBlessings({
         category_id: categorySlug,
         limit: 6
       })
-      const categoryBlessings = categoryResults.filter(b => 
-        b.id !== currentBlessingId && 
-        !relatedBlessings.some(rb => rb.id === b.id)
-      )
+      const categoryBlessings = Array.isArray(categoryResults)
+        ? categoryResults.filter(b => 
+            b.id !== currentBlessingId && 
+            !relatedBlessings.some(rb => rb.id === b.id)
+          )
+        : []
       relatedBlessings = [...relatedBlessings, ...categoryBlessings].slice(0, 3)
     }
     
@@ -43,10 +47,12 @@ export default async function RelatedBlessings({
         is_featured: true,
         limit: 6
       })
-      const featuredBlessings = featuredResults.filter(b => 
-        b.id !== currentBlessingId && 
-        !relatedBlessings.some(rb => rb.id === b.id)
-      )
+      const featuredBlessings = Array.isArray(featuredResults)
+        ? featuredResults.filter(b => 
+            b.id !== currentBlessingId && 
+            !relatedBlessings.some(rb => rb.id === b.id)
+          )
+        : []
       relatedBlessings = [...relatedBlessings, ...featuredBlessings].slice(0, 3)
     }
 

@@ -22,20 +22,23 @@ import {
   Bookmark,
   ChevronDown
 } from 'lucide-react'
+import AuthModal from './AuthModal'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // 模拟登录状态
-  const [favoriteCount, setFavoriteCount] = useState(3) // 模拟收藏数量
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Mock login state
+  const [favoriteCount, setFavoriteCount] = useState(3) // Mock favorite count
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login')
   
   const favoritesRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  // 点击外部关闭下拉菜单
+  // Close dropdown menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (favoritesRef.current && !favoritesRef.current.contains(event.target as Node)) {
@@ -59,23 +62,37 @@ export default function Header() {
     }
   }
 
-  // 模拟收藏夹数据
+  // Mock favorites data
   const mockFavorites = [
     { id: 1, title: "May your day be filled with happiness", category: "Daily Blessings" },
     { id: 2, title: "Wishing you a wonderful birthday", category: "Birthday Blessings" },
     { id: 3, title: "May God bless your union", category: "Wedding & Anniversary" }
   ]
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
+  const openAuthModal = (mode: 'login' | 'register') => {
+    setAuthModalMode(mode)
+    setIsAuthModalOpen(true)
     setIsUserMenuOpen(false)
-    // 这里可以添加实际的登录逻辑
+    setIsMenuOpen(false)
+  }
+
+  const handleLogin = () => {
+    openAuthModal('login')
+  }
+
+  const handleRegister = () => {
+    openAuthModal('register')
+  }
+
+  const handleLoginSuccess = (userData: any) => {
+    setIsLoggedIn(true)
+    // Add actual login logic here
   }
 
   const handleLogout = () => {
     setIsLoggedIn(false)
     setIsUserMenuOpen(false)
-    // 这里可以添加实际的登出逻辑
+    // Add actual logout logic here
   }
 
   const categories = [
@@ -243,7 +260,7 @@ export default function Header() {
                   {isLoggedIn ? (
                     <>
                       <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-800">用户名</p>
+                        <p className="text-sm font-medium text-gray-800">Username</p>
                         <p className="text-xs text-gray-500">user@example.com</p>
                       </div>
                       <Link 
@@ -252,7 +269,7 @@ export default function Header() {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <User className="w-4 h-4" />
-                        个人资料
+                        Profile
                       </Link>
                       <Link 
                         href="/settings" 
@@ -260,7 +277,7 @@ export default function Header() {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <Settings className="w-4 h-4" />
-                        设置
+                        Settings
                       </Link>
                       <Link 
                         href="/favorites" 
@@ -268,7 +285,7 @@ export default function Header() {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         <Bookmark className="w-4 h-4" />
-                        我的收藏
+                        My Favorites
                       </Link>
                       <hr className="my-2" />
                       <button 
@@ -276,7 +293,7 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
                       >
                         <LogOut className="w-4 h-4" />
-                        退出登录
+                        Logout
                       </button>
                     </>
                   ) : (
@@ -286,16 +303,15 @@ export default function Header() {
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
                       >
                         <LogIn className="w-4 h-4" />
-                        登录
+                        Login
                       </button>
-                      <Link 
-                        href="/register" 
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setIsUserMenuOpen(false)}
+                      <button 
+                        onClick={handleRegister}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
                       >
                         <UserPlus className="w-4 h-4" />
-                        注册
-                      </Link>
+                        Register
+                      </button>
                     </>
                   )}
                 </div>
@@ -391,7 +407,7 @@ export default function Header() {
                       </span>
                     )}
                   </div>
-                  <span>收藏夹 {favoriteCount > 0 && `(${favoriteCount})`}</span>
+                  <span>Favorites {favoriteCount > 0 && `(${favoriteCount})`}</span>
                 </button>
               </div>
 
@@ -400,7 +416,7 @@ export default function Header() {
                 {isLoggedIn ? (
                   <>
                     <div className="px-2 py-1 bg-gray-50 rounded">
-                      <p className="text-sm font-medium text-gray-800">用户名</p>
+                      <p className="text-sm font-medium text-gray-800">Username</p>
                       <p className="text-xs text-gray-500">user@example.com</p>
                     </div>
                     <Link 
@@ -409,7 +425,7 @@ export default function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <User className="w-4 h-4" />
-                      <span>个人资料</span>
+                      <span>Profile</span>
                     </Link>
                     <Link 
                       href="/settings" 
@@ -417,7 +433,7 @@ export default function Header() {
                       onClick={() => setIsMenuOpen(false)}
                     >
                       <Settings className="w-4 h-4" />
-                      <span>设置</span>
+                      <span>Settings</span>
                     </Link>
                     <button 
                       onClick={() => {
@@ -427,7 +443,7 @@ export default function Header() {
                       className="flex items-center gap-3 text-red-600 hover:text-red-700 transition-colors w-full text-left"
                     >
                       <LogOut className="w-4 h-4" />
-                      <span>退出登录</span>
+                      <span>Logout</span>
                     </button>
                   </>
                 ) : (
@@ -435,21 +451,21 @@ export default function Header() {
                     <button 
                       onClick={() => {
                         handleLogin()
-                        setIsMenuOpen(false)
                       }}
                       className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors w-full text-left"
                     >
                       <LogIn className="w-4 h-4" />
                       <span>Login</span>
                     </button>
-                    <Link 
-                      href="/register" 
-                      className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
+                    <button 
+                      onClick={() => {
+                        handleRegister()
+                      }}
+                      className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors w-full text-left"
                     >
                       <UserPlus className="w-4 h-4" />
                       <span>Register</span>
-                    </Link>
+                    </button>
                   </>
                 )}
               </div>
@@ -457,6 +473,14 @@ export default function Header() {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        mode={authModalMode}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </header>
   )
 }

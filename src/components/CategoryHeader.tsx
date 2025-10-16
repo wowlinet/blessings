@@ -31,7 +31,7 @@ const categoryIcons = {
 
 interface CategoryHeaderProps {
   category: Category
-  selectedSubcategory?: Subcategory
+  selectedSubcategory?: Subcategory | null
   totalCount: number
 }
 
