@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Crimson_Text } from 'next/font/google'
 import { Toaster } from 'sonner'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -99,6 +100,10 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#8B5CF6" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
+        {/* Google Analytics - Only load in production */}
+        {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
       </head>
       <body className={`${inter.className} antialiased bg-gray-50`}>
         <div className="min-h-screen flex flex-col">

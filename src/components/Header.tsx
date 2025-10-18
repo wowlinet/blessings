@@ -352,7 +352,7 @@ export default function Header() {
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center p-2 text-gray-600 hover:text-primary transition-colors"
               >
-                <User className="w-5 h-5" />
+                <User className="w-5 h-5 cursor-pointer" />
                 <ChevronDown className="w-3 h-3 ml-1" />
               </button>
 
@@ -386,14 +386,14 @@ export default function Header() {
                     <>
                       <button 
                         onClick={handleLogin}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
+                        className="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
                       >
                         <LogIn className="w-4 h-4" />
                         Login
                       </button>
                       <button 
                         onClick={handleRegister}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
+                        className="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 w-full text-left"
                       >
                         <UserPlus className="w-4 h-4" />
                         Register
