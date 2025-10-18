@@ -355,7 +355,7 @@ export default function SitemapPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/"
-              className="bg-gradient-to-r from-amber-400 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-amber-500 hover:to-blue-700 transition-all duration-200"
+              className="bg-amber-500 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200"
             >
               Go to Homepage
             </a>

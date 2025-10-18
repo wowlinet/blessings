@@ -283,7 +283,7 @@ export default function PrivacyPage() {
           <div className="text-center">
             <a
               href="/contact"
-              className="bg-gradient-to-r from-amber-400 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-amber-500 hover:to-blue-700 transition-all duration-200 inline-flex items-center gap-2"
+              className="bg-amber-500 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 inline-flex items-center gap-2"
             >
               <Mail className="w-5 h-5" />
               Contact Our Privacy Team

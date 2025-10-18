@@ -91,16 +91,23 @@ export default function Header() {
         .from('user_profiles')
         .select('*')
         .eq('user_id', userId)
-        .single()
 
       if (error) {
         console.error('Error fetching user profile:', error)
         return
       }
 
-      setUserProfile(data)
+      // Handle empty results gracefully
+      if (data && data.length > 0) {
+        setUserProfile(data[0])
+      } else {
+        // User profile doesn't exist, set to null
+        console.log('No user profile found, user may need to complete profile setup')
+        setUserProfile(null)
+      }
     } catch (error) {
       console.error('Error fetching user profile:', error)
+      setUserProfile(null)
     }
   }
 
@@ -376,7 +383,7 @@ export default function Header() {
                       <hr className="my-2" />
                       <button 
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                        className="cursor-pointer flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
                       >
                         <LogOut className="w-4 h-4" />
                         Logout

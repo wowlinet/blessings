@@ -89,7 +89,7 @@ export default function SearchFilters({ query, filters }: SearchFiltersProps) {
       <div className="lg:hidden mb-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full justify-center text-gray-900 dark:text-gray-100"
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full justify-center text-gray-900 dark:text-gray-100 cursor-pointer"
         >
           <Filter className="w-4 h-4" />
           <span>Filters & Sort</span>

@@ -231,7 +231,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-amber-400 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-amber-500 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full text-white bg-amber-600 px-8 py-3 rounded-lg font-semibold hover:from-amber-500 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -308,7 +308,7 @@ export default function ContactPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/about"
-              className="bg-gradient-to-r from-amber-400 to-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-amber-500 hover:to-blue-700 transition-all duration-200"
+              className="bg-amber-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-700 transition-all duration-200"
             >
               Learn More About Us
             </a>

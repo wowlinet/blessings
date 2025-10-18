@@ -357,7 +357,7 @@ export default function CookiePolicyPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/contact"
-                className="border-2 border-gray-300 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:border-amber-400 hover:text-amber-600 transition-colors"
+                className="border-2 border-gray-300 bg-amber-500 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
               >
                 Contact Us
               </a>

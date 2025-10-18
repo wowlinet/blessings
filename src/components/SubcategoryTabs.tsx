@@ -68,7 +68,7 @@ export default function SubcategoryTabs({
         <div className="flex flex-wrap gap-2 justify-start">
           <button
             onClick={() => handleSubcategoryChange()}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer ${
               !selectedSubcategory
                 ? 'bg-amber-500 text-white'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -81,7 +81,7 @@ export default function SubcategoryTabs({
             <button
               key={subcategory.id}
               onClick={() => handleSubcategoryChange(subcategory.slug)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer ${
                 selectedSubcategory === subcategory.slug
                   ? 'bg-amber-500 text-white'
                   : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
@@ -101,7 +101,7 @@ export default function SubcategoryTabs({
             <button
               key={type.value}
               onClick={() => handleContentTypeChange(type.value || undefined)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 cursor-pointer ${
                 selectedContentType === type.value || (!selectedContentType && type.value === '')
                   ? 'bg-amber-500 text-white'
                   : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
