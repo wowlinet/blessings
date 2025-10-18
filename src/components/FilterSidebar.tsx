@@ -6,9 +6,10 @@ import { useState } from 'react'
 
 interface FilterSidebarProps {
   categorySlug: string
+  subcategorySlug?: string
 }
 
-export default function FilterSidebar({ categorySlug }: FilterSidebarProps) {
+export default function FilterSidebar({ categorySlug, subcategorySlug }: FilterSidebarProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(false)
@@ -23,20 +24,21 @@ export default function FilterSidebar({ categorySlug }: FilterSidebarProps) {
     params.delete('page') // Reset to first page
     
     const queryString = params.toString()
-    const url = `/categories/${categorySlug}${queryString ? `?${queryString}` : ''}`
+    const baseUrl = subcategorySlug 
+      ? `/categories/${categorySlug}/${subcategorySlug}`
+      : `/categories/${categorySlug}`
+    const url = `${baseUrl}${queryString ? `?${queryString}` : ''}`
     router.push(url)
   }
 
   const clearFilters = () => {
     const params = new URLSearchParams()
-    // Keep only category and subcategory
-    const subcategory = searchParams.get('subcategory')
-    if (subcategory) {
-      params.set('subcategory', subcategory)
-    }
     
     const queryString = params.toString()
-    const url = `/categories/${categorySlug}${queryString ? `?${queryString}` : ''}`
+    const baseUrl = subcategorySlug 
+      ? `/categories/${categorySlug}/${subcategorySlug}`
+      : `/categories/${categorySlug}`
+    const url = `${baseUrl}${queryString ? `?${queryString}` : ''}`
     router.push(url)
   }
 

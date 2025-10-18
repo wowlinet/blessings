@@ -38,6 +38,7 @@ module.exports = {
       fontFamily: {
         'inter': ['Inter', 'sans-serif'],
         'crimson': ['Crimson Text', 'serif'],
+        'pacifico': ['Pacifico', 'cursive'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

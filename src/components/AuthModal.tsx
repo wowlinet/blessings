@@ -13,6 +13,7 @@ import {
   Loader2,
   Heart
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -23,6 +24,7 @@ interface AuthModalProps {
 }
 
 interface FormData {
+  username: string
   email: string
   password: string
   confirmPassword: string
@@ -31,6 +33,7 @@ interface FormData {
 }
 
 interface FormErrors {
+  username?: string
   email?: string
   password?: string
   confirmPassword?: string
@@ -53,6 +56,7 @@ export default function AuthModal({
   const [successMessage, setSuccessMessage] = useState('')
   
   const [formData, setFormData] = useState<FormData>({
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -66,6 +70,7 @@ export default function AuthModal({
   useEffect(() => {
     if (isOpen) {
       setFormData({
+        username: '',
         email: '',
         password: '',
         confirmPassword: '',
@@ -121,6 +126,15 @@ export default function AuthModal({
     const newErrors: FormErrors = {}
     
     if (mode === 'register') {
+      // Username validation
+      if (!formData.username.trim()) {
+        newErrors.username = 'Username is required'
+      } else if (formData.username.length < 3) {
+        newErrors.username = 'Username must be at least 3 characters long'
+      } else if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+        newErrors.username = 'Username can only contain letters, numbers, and underscores'
+      }
+      
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match'
       }
@@ -142,7 +156,7 @@ export default function AuthModal({
     if (!formData.password) {
       newErrors.password = 'Password is required'
     } else if (mode === 'register' && passwordStrength.strength === 'weak') {
-      newErrors.password = 'Password is too weak'
+      newErrors.password = 'Password is too weak. Please include uppercase, lowercase, numbers, and special characters'
     }
     
     setErrors(newErrors)
@@ -162,56 +176,192 @@ export default function AuthModal({
     e.preventDefault()
     
     if (!validateForm()) return
+
+    // Check for rate limiting (brute force protection)
+    if (mode === 'login') {
+      const { data: recentAttempts } = await supabase
+        .from('login_attempts')
+        .select('*')
+        .eq('email', formData.email)
+        .eq('success', false)
+        .gte('attempted_at', new Date(Date.now() - 15 * 60 * 1000).toISOString()) // Last 15 minutes
+        .order('attempted_at', { ascending: false })
+
+      if (recentAttempts && recentAttempts.length >= 5) {
+        setErrors({ general: 'Too many failed login attempts. Please try again in 15 minutes.' })
+        return
+      }
+    }
     
     setIsLoading(true)
     setErrors({})
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
       if (mode === 'login') {
-        // Mock login success
-        const userData = {
+        // Record login attempt
+        const loginAttemptData = {
           email: formData.email,
-          name: 'John Doe'
+          ip_address: '127.0.0.1', // In production, get real IP
+          success: false,
+          attempted_at: new Date().toISOString(),
         }
-        setSuccessMessage('Login successful! Welcome back.')
-        setShowSuccess(true)
-        onLoginSuccess?.(userData)
-        
-        setTimeout(() => {
-          onClose()
-        }, 1500)
+
+        try {
+          // Supabase login
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password,
+          })
+          
+          if (error) {
+            // Record failed login attempt
+            await supabase.from('login_attempts').insert([{
+              ...loginAttemptData,
+              failure_reason: error.message
+            }])
+
+            if (error.message.includes('Invalid login credentials')) {
+              setErrors({ general: 'Invalid email or password. Please try again.' })
+            } else {
+              setErrors({ general: error.message })
+            }
+            return
+          }
+
+          // Record successful login attempt
+          await supabase.from('login_attempts').insert([{
+            ...loginAttemptData,
+            success: true,
+            failure_reason: null
+          }])
+
+          // Create user session record if "Remember Me" is checked
+          if (formData.rememberMe && data.user) {
+            await supabase.from('user_sessions').insert([{
+              user_id: data.user.id,
+              device_info: navigator.userAgent || 'Unknown Device',
+              ip_address: '127.0.0.1', // In production, get real IP
+              user_agent: navigator.userAgent,
+              created_at: new Date().toISOString(),
+              last_activity: new Date().toISOString(),
+              is_active: true
+            }])
+          }
+          
+          setSuccessMessage('Login successful! Welcome back.')
+          setShowSuccess(true)
+          onLoginSuccess?.(data.user)
+          
+          setTimeout(() => {
+            onClose()
+          }, 1500)
+        } catch (sessionError) {
+          console.error('Session creation error:', sessionError)
+          // Don't fail the login if session creation fails
+        }
       } else {
-        // Mock registration success
-        const userData = {
-          email: formData.email
+        // Check username uniqueness first
+        const { data: existingUser, error: checkError } = await supabase
+          .from('user_profiles')
+          .select('username')
+          .eq('username', formData.username)
+          .single()
+        
+        if (existingUser) {
+          setErrors({ username: 'Username is already taken. Please choose another one.' })
+          return
         }
-        setSuccessMessage('Registration successful! Welcome to BlessYou.Today.')
+        
+        // Supabase registration
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              username: formData.username,
+            }
+          }
+        })
+        
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            setErrors({ email: 'An account with this email already exists.' })
+          } else {
+            setErrors({ general: error.message })
+          }
+          return
+        }
+        
+        // Create profile record manually since trigger might not work in all cases
+        if (data.user) {
+          try {
+            const { error: profileError } = await supabase
+              .from('user_profiles')
+              .insert([
+                {
+                  user_id: data.user.id,
+                  username: formData.username,
+                  full_name: formData.username, // Use username as default full name
+                }
+              ])
+            
+            if (profileError) {
+              console.error('Profile creation error:', profileError)
+              // Don't fail registration if profile creation fails
+            }
+          } catch (profileException) {
+            console.error('Profile creation exception:', profileException)
+            // Don't fail registration if profile creation fails
+          }
+        }
+        
+        setSuccessMessage('Registration successful! Please check your email to verify your account.')
         setShowSuccess(true)
-        onRegisterSuccess?.(userData)
+        onRegisterSuccess?.(data.user)
         
         setTimeout(() => {
           onClose()
         }, 1500)
       }
-    } catch (error) {
-      setErrors({ general: 'An error occurred. Please try again.' })
+    } catch (error: any) {
+      setErrors({ general: 'An unexpected error occurred. Please try again.' })
+      console.error('Auth error:', error)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleForgotPassword = () => {
-    // Show a more elegant notification instead of alert
-    setSuccessMessage('Password reset link has been sent to your email!')
-    setShowSuccess(true)
+  const handleForgotPassword = async () => {
+    if (!formData.email) {
+      setErrors({ email: 'Please enter your email address first.' })
+      return
+    }
 
-    // Hide the success message after 3 seconds
-    setTimeout(() => {
-      setShowSuccess(false)
-    }, 3000)
+    setIsLoading(true)
+    setErrors({})
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+
+      if (error) {
+        setErrors({ general: error.message })
+      } else {
+        setSuccessMessage('Password reset link has been sent to your email!')
+        setShowSuccess(true)
+
+        // Hide the success message after 3 seconds
+        setTimeout(() => {
+          setShowSuccess(false)
+        }, 3000)
+      }
+    } catch (error: any) {
+      setErrors({ general: 'Failed to send password reset email. Please try again.' })
+      console.error('Password reset error:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (!isOpen) return null
@@ -228,14 +378,17 @@ export default function AuthModal({
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-100 transition-all">
           {/* Header */}
-          <div className="relative bg-gradient-to-br from-primary via-[#f9c74f] to-secondary px-6 py-8 text-white">
+          <div 
+            className="relative px-6 py-8 text-white"
+            style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%)' }}
+          >
             {/* Dark overlay for better contrast */}
             {/* <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/20 rounded-t-2xl"></div> */}
             
             <div className="relative z-10">
               <button
                 onClick={onClose}
-                className="absolute right-0 top-0 p-2 text-white/90 hover:text-white hover:bg-white/20 rounded-full transition-all duration-200 cursor-pointer"
+                className="absolute right-0 top-0 p-2 text-white bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 cursor-pointer"
                 aria-label="Close modal"
                 style={{
                   textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
@@ -287,14 +440,14 @@ export default function AuthModal({
           {/* Form */}
           <div className="px-6 py-6">
             {/* Mode Toggle */}
-            <div className="flex bg-cream/30 rounded-xl p-1.5 mb-6 border border-gray-200/50">
+            <div className="flex mb-6">
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className={`flex-1 py-2.5 px-4 text-sm font-semibold rounded-lg transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none cursor-pointer ${
+                className={`flex-1 py-3 px-4 text-sm font-semibold transition-all duration-300 outline-none focus:outline-none focus-visible:outline-none cursor-pointer border-b-2 ${
                   mode === 'login'
-                    ? 'bg-white text-primary shadow-md scale-[1.02]'
-                    : 'text-gray-600 hover:text-gray-800 hover:bg-white/60 active:scale-95'
+                    ? 'text-orange-500 border-orange-500'
+                    : 'text-gray-400 border-transparent hover:text-gray-600'
                 }`}
               >
                 Sign In
@@ -302,10 +455,10 @@ export default function AuthModal({
               <button
                 type="button"
                 onClick={() => setMode('register')}
-                className={`flex-1 py-2.5 px-4 text-sm font-semibold rounded-lg transition-all duration-200 outline-none focus:outline-none focus-visible:outline-none cursor-pointer ${
+                className={`flex-1 py-3 px-4 text-sm font-semibold transition-all duration-300 outline-none focus:outline-none focus-visible:outline-none cursor-pointer border-b-2 ${
                   mode === 'register'
-                    ? 'bg-white text-primary shadow-md scale-[1.02]'
-                    : 'text-gray-600 hover:text-gray-800 hover:bg-white/60 active:scale-95'
+                    ? 'text-orange-500 border-orange-500'
+                    : 'text-gray-400 border-transparent hover:text-gray-600'
                 }`}
               >
                 Sign Up
@@ -313,6 +466,34 @@ export default function AuthModal({
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+
+              {/* Username Field (Register only) */}
+              {mode === 'register' && (
+                <div>
+                  <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                    Username *
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      id="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={(e) => handleInputChange('username', e.target.value)}
+                      className={`w-full pl-10 pr-4 py-2.5 border rounded-xl bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all ${
+                        errors.username ? 'border-red-300 bg-red-50/30' : 'border-gray-200'
+                      }`}
+                      placeholder="Choose a username"
+                    />
+                  </div>
+                  {errors.username && (
+                    <p className="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.username}
+                    </p>
+                  )}
+                </div>
+              )}
 
               {/* Email Field */}
               <div>
@@ -497,16 +678,12 @@ export default function AuthModal({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full relative bg-gradient-to-br from-primary via-[#f9c74f] to-secondary text-white py-3 px-4 rounded-xl font-bold text-base shadow-md hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer flex items-center justify-center gap-2 overflow-hidden group"
+                className="w-full relative text-white py-3 px-4 rounded-xl font-bold text-base shadow-md hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 cursor-pointer flex items-center justify-center gap-2 overflow-hidden group"
                 style={{
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3)',
+                  background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%)',
                   boxShadow: '0 4px 12px rgba(247, 184, 1, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                 }}
               >
-                {/* Dark overlay for better text contrast */}
-                {/* <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/20 pointer-events-none"></div> */}
-                {/* Hover effect overlay */}
-                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-200 pointer-events-none"></div>
                 <div className="relative z-10 flex items-center justify-center gap-2 font-bold">
                   {isLoading ? (
                     <>
@@ -525,7 +702,8 @@ export default function AuthModal({
                   <button
                     type="button"
                     onClick={handleForgotPassword}
-                    className="text-sm text-primary hover:text-secondary font-medium underline decoration-primary/30 hover:decoration-secondary transition-colors cursor-pointer"
+                    disabled={isLoading}
+                    className="text-blue-600 hover:text-blue-700 font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Forgot your password?
                   </button>

@@ -20,18 +20,20 @@ export default function SubcategoryTabs({
   const handleSubcategoryChange = (subcategorySlug?: string) => {
     const params = new URLSearchParams(searchParams.toString())
     
-    if (subcategorySlug) {
-      params.set('subcategory', subcategorySlug)
-    } else {
-      params.delete('subcategory')
-    }
-    
     // Reset to first page when changing subcategory
     params.delete('page')
     
     const queryString = params.toString()
-    const url = `/categories/${category.slug}${queryString ? `?${queryString}` : ''}`
-    router.push(url)
+    
+    if (subcategorySlug) {
+      // Navigate to subcategory route
+      const url = `/categories/${category.slug}/${subcategorySlug}${queryString ? `?${queryString}` : ''}`
+      router.push(url)
+    } else {
+      // Navigate back to category route (all subcategories)
+      const url = `/categories/${category.slug}${queryString ? `?${queryString}` : ''}`
+      router.push(url)
+    }
   }
 
   const handleContentTypeChange = (contentType?: string) => {

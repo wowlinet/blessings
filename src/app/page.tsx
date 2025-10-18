@@ -4,7 +4,6 @@ import { Category, Blessing } from '@/types'
 import HeroSection from '@/components/HeroSection'
 import CategoryNavigation from '@/components/CategoryNavigation'
 import TrendingBlessings from '@/components/TrendingBlessings'
-import QuickSearch from '@/components/QuickSearch'
 
 export const metadata: Metadata = {
   title: 'BlessYou.Today - Beautiful Blessings for Every Occasion',
@@ -102,9 +101,8 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen">
       <HeroSection featuredBlessings={featuredBlessings} />
-      <QuickSearch />
-      <CategoryNavigation categories={categories} />
       <TrendingBlessings blessings={trendingBlessings} />
+      <CategoryNavigation categories={categories} />
     </main>
   )
 }

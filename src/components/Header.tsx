@@ -23,20 +23,105 @@ import {
   ChevronDown
 } from 'lucide-react'
 import AuthModal from './AuthModal'
+import { supabase } from '@/lib/supabase'
+
+interface UserProfile {
+  id: string
+  user_id: string
+  username: string
+  full_name: string
+  avatar_url?: string
+}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isLoggedIn, setIsLoggedIn] = useState(false) // Mock login state
-  const [favoriteCount, setFavoriteCount] = useState(3) // Mock favorite count
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [favoriteCount, setFavoriteCount] = useState(0)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login')
+  const [isLoading, setIsLoading] = useState(true)
   
   const favoritesRef = useRef<HTMLDivElement>(null)
   const userMenuRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  // Initialize auth state and listen for changes
+  useEffect(() => {
+    // Get initial session
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        setUser(session.user)
+        setIsLoggedIn(true)
+        await fetchUserProfile(session.user.id)
+        await fetchFavoriteCount(session.user.id)
+      }
+      setIsLoading(false)
+    }
+
+    getInitialSession()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUser(session.user)
+        setIsLoggedIn(true)
+        await fetchUserProfile(session.user.id)
+        await fetchFavoriteCount(session.user.id)
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null)
+        setUserProfile(null)
+        setIsLoggedIn(false)
+        setFavoriteCount(0)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Fetch user profile from database
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+
+      if (error) {
+        console.error('Error fetching user profile:', error)
+        return
+      }
+
+      setUserProfile(data)
+    } catch (error) {
+      console.error('Error fetching user profile:', error)
+    }
+  }
+
+  // Fetch user's favorite count
+  const fetchFavoriteCount = async (userId: string) => {
+    try {
+      const { count, error } = await supabase
+        .from('user_favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+
+      if (error) {
+        console.error('Error fetching favorite count:', error)
+        return
+      }
+
+      setFavoriteCount(count || 0)
+    } catch (error) {
+      console.error('Error fetching favorite count:', error)
+    }
+  }
 
   // Close dropdown menus when clicking outside
   useEffect(() => {
@@ -62,7 +147,7 @@ export default function Header() {
     }
   }
 
-  // Mock favorites data
+  // Mock favorites data - in real app, fetch from database
   const mockFavorites = [
     { id: 1, title: "May your day be filled with happiness", category: "Daily Blessings" },
     { id: 2, title: "Wishing you a wonderful birthday", category: "Birthday Blessings" },
@@ -85,14 +170,31 @@ export default function Header() {
   }
 
   const handleLoginSuccess = (userData: any) => {
-    setIsLoggedIn(true)
-    // Add actual login logic here
+    // Auth state will be updated by the auth listener
+    setIsAuthModalOpen(false)
   }
 
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setIsUserMenuOpen(false)
-    // Add actual logout logic here
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      setIsUserMenuOpen(false)
+      // Auth state will be updated by the auth listener
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
+
+  // Get display name and email
+  const getDisplayName = () => {
+    if (userProfile?.full_name) return userProfile.full_name
+    if (userProfile?.username) return userProfile.username
+    if (user?.user_metadata?.full_name) return user.user_metadata.full_name
+    if (user?.user_metadata?.username) return user.user_metadata.username
+    return 'User'
+  }
+
+  const getDisplayEmail = () => {
+    return user?.email || 'user@example.com'
   }
 
   const categories = [
@@ -115,7 +217,7 @@ export default function Header() {
             <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
               <Heart className="w-5 h-5 text-white fill-current" />
             </div>
-            <span className="text-xl font-bold font-crimson text-gray-800">
+            <span className="text-xl font-pacifico text-gray-800" style={{fontFamily: "'Pacifico', cursive"}}>
               BlessYou.Today
             </span>
           </Link>
@@ -260,25 +362,9 @@ export default function Header() {
                   {isLoggedIn ? (
                     <>
                       <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-800">Username</p>
-                        <p className="text-xs text-gray-500">user@example.com</p>
+                        <p className="text-sm font-medium text-gray-800">{getDisplayName()}</p>
+                        <p className="text-xs text-gray-500">{getDisplayEmail()}</p>
                       </div>
-                      <Link 
-                        href="/profile" 
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <User className="w-4 h-4" />
-                        Profile
-                      </Link>
-                      <Link 
-                        href="/settings" 
-                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <Settings className="w-4 h-4" />
-                        Settings
-                      </Link>
                       <Link 
                         href="/favorites" 
                         className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -416,8 +502,8 @@ export default function Header() {
                 {isLoggedIn ? (
                   <>
                     <div className="px-2 py-1 bg-gray-50 rounded">
-                      <p className="text-sm font-medium text-gray-800">Username</p>
-                      <p className="text-xs text-gray-500">user@example.com</p>
+                      <p className="text-sm font-medium text-gray-800">{getDisplayName()}</p>
+                      <p className="text-xs text-gray-500">{getDisplayEmail()}</p>
                     </div>
                     <Link 
                       href="/profile" 
@@ -478,7 +564,7 @@ export default function Header() {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        mode={authModalMode}
+        initialMode={authModalMode}
         onLoginSuccess={handleLoginSuccess}
       />
     </header>

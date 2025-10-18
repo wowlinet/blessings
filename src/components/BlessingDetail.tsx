@@ -11,45 +11,146 @@ import {
   Copy, 
   Heart,
   ArrowLeft,
-  Tag
+  Tag,
+  Check
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
+import { supabase } from '@/lib/supabase'
 
 interface BlessingDetailProps {
-  blessing: Blessing
+  blessing?: Blessing
+  id?: string
+  isModal?: boolean
 }
 
-export default function BlessingDetail({ blessing }: BlessingDetailProps) {
+export default function BlessingDetail({ blessing, id, isModal = false }: BlessingDetailProps) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isFavorited, setIsFavorited] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [copied, setCopied] = useState(false)
+  const [currentBlessing, setCurrentBlessing] = useState<Blessing | null>(blessing || null)
   const router = useRouter()
 
+  // Fetch blessing data if only id is provided (for modal mode)
   useEffect(() => {
-    // Increment view count when component mounts
-    // This would typically be done server-side or with an API call
-    // For now, we'll just track it locally
-  }, [blessing.id])
+    if (id && !blessing) {
+      const fetchBlessing = async () => {
+        try {
+          const response = await fetch(`/api/blessings/${id}`)
+          if (response.ok) {
+            const data = await response.json()
+            setCurrentBlessing(data)
+          }
+        } catch (error) {
+          console.error('Error fetching blessing:', error)
+        }
+      }
+      fetchBlessing()
+    }
+  }, [id, blessing])
+
+  // Check user authentication status and favorite status
+  useEffect(() => {
+    if (!currentBlessing) return
+
+    const checkUserAndFavorites = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        setUser(user)
+
+        if (user) {
+          // Check if blessing is favorited in database
+          const { data, error } = await supabase
+            .from('user_favorites')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('blessing_id', currentBlessing.id)
+            .single()
+
+          if (!error && data) {
+            setIsFavorited(true)
+          }
+        } else {
+          // Check localStorage for non-authenticated users
+          const localFavorites = JSON.parse(localStorage.getItem('favorites') || '[]')
+          setIsFavorited(localFavorites.includes(currentBlessing.id))
+        }
+      } catch (error) {
+        console.error('Error checking favorites:', error)
+      }
+    }
+
+    checkUserAndFavorites()
+  }, [currentBlessing?.id])
 
   const handleCopyContent = async () => {
+    if (!currentBlessing) return
     try {
-      await navigator.clipboard.writeText(blessing.content)
-      toast.success('Blessing copied to clipboard!')
+      await navigator.clipboard.writeText(currentBlessing.content)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      toast.error('Failed to copy blessing')
+      console.error('Failed to copy text:', error)
     }
   }
 
-  const handleFavorite = () => {
-    // This would typically involve API calls to manage user favorites
-    setIsFavorited(!isFavorited)
-    toast.success(isFavorited ? 'Removed from favorites' : 'Added to favorites')
+  const handleFavorite = async () => {
+    if (isLoading || !currentBlessing) return
+    setIsLoading(true)
+
+    try {
+      if (user) {
+        // Authenticated user - use database
+        if (isFavorited) {
+          // Remove from favorites
+          const { error } = await supabase
+            .from('user_favorites')
+            .delete()
+            .eq('user_id', user.id)
+            .eq('blessing_id', currentBlessing.id)
+
+          if (error) throw error
+          setIsFavorited(false)
+        } else {
+          // Add to favorites
+          const { error } = await supabase
+            .from('user_favorites')
+            .insert({
+              user_id: user.id,
+              blessing_id: currentBlessing.id
+            })
+
+          if (error) throw error
+          setIsFavorited(true)
+        }
+      } else {
+        // Non-authenticated user - use localStorage
+        const localFavorites = JSON.parse(localStorage.getItem('favorites') || '[]')
+        
+        if (isFavorited) {
+          // Remove from favorites
+          const updatedFavorites = localFavorites.filter((id: string) => id !== currentBlessing.id)
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites))
+          setIsFavorited(false)
+        } else {
+          // Add to favorites
+          const updatedFavorites = [...localFavorites, currentBlessing.id]
+          localStorage.setItem('favorites', JSON.stringify(updatedFavorites))
+          setIsFavorited(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error updating favorites:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const getContentTypeLabel = (type: string) => {
     switch (type) {
       case 'short': return 'Quick Blessing'
-      case 'long': return 'Prayer & Letter'
+      case 'long': return 'Prayer/Letter'
       case 'image': return 'Shareable Image'
       default: return 'Blessing'
     }
@@ -57,165 +158,241 @@ export default function BlessingDetail({ blessing }: BlessingDetailProps) {
 
   const getContentTypeColor = (type: string) => {
     switch (type) {
-      case 'short': return 'bg-green-100 text-green-800'
-      case 'long': return 'bg-blue-100 text-blue-800'
-      case 'image': return 'bg-purple-100 text-purple-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'short': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+      case 'long': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+      case 'image': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     }
   }
 
-  return (
-    <article className="bg-white rounded-lg shadow-lg overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-secondary text-white p-6">
-        <div className="flex items-center gap-4 mb-4">
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getContentTypeColor(blessing.content_type)}`}>
-              {getContentTypeLabel(blessing.content_type)}
-            </span>
-            {blessing.is_featured && (
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
-                Featured
-              </span>
-            )}
-          </div>
+  if (!currentBlessing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading blessing...</p>
         </div>
+      </div>
+    )
+  }
 
-        <h1 className="text-2xl md:text-3xl font-bold font-crimson mb-4">
-          {blessing.title}
-        </h1>
+  return (
+    <div className={isModal ? "" : "min-h-screen text-white p-8"}>
+      <div className={isModal ? "" : "container mx-auto px-4 py-8"}>
+        <article className={isModal ? "" : "max-w-4xl mx-auto"}>
+          {/* Header with background */}
+          <div className={`relative hero-gradient text-amber-900 ${isModal ? "p-6" : "rounded-t-2xl p-8"} mb-0`}>
+            <div className="flex items-center justify-between mb-6">
+              {!isModal && (
+                <button
+                  onClick={() => router.back()}
+                  className="p-2 hover:bg-amber-800/20 rounded-lg transition-colors"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+              )}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getContentTypeColor(currentBlessing.content_type)}`}>
+                  {getContentTypeLabel(currentBlessing.content_type)}
+                </span>
+                {currentBlessing.is_featured && (
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+                    Featured
+                  </span>
+                )}
+              </div>
+            </div>
 
-        {/* Breadcrumb */}
-        <nav className="text-sm opacity-90">
-          <ol className="flex items-center gap-2">
-            <li>
-              <a href="/" className="hover:text-white/80 transition-colors">
-                Home
-              </a>
-            </li>
-            <li>/</li>
-            <li>
-              <a 
-                href={`/categories/${blessing.categories?.slug}`}
-                className="hover:text-white/80 transition-colors"
-              >
-                {blessing.categories?.name}
-              </a>
-            </li>
-            {blessing.subcategories && (
-              <>
+            <h1 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
+              {currentBlessing.title}
+            </h1>
+
+            {/* Breadcrumb */}
+            <nav className="text-sm opacity-90">
+              <ol className="flex items-center gap-2 flex-wrap">
+                <li>
+                  <a href="/" className="hover:text-amber-700 transition-colors">
+                    Home
+                  </a>
+                </li>
                 <li>/</li>
                 <li>
                   <a 
-                    href={`/categories/${blessing.categories?.slug}?subcategory=${blessing.subcategories.slug}`}
-                    className="hover:text-white/80 transition-colors"
+                    href={`/categories/${currentBlessing.categories?.slug}`}
+                    className="hover:text-amber-700 transition-colors"
                   >
-                    {blessing.subcategories.name}
+                    {currentBlessing.categories?.name}
                   </a>
                 </li>
-              </>
-            )}
-          </ol>
-        </nav>
-      </div>
+                {currentBlessing.subcategories && (
+                  <>
+                    <li>/</li>
+                    <li>
+                      <a 
+                        href={`/categories/${currentBlessing.categories?.slug}?subcategory=${currentBlessing.subcategories.slug}`}
+                        className="hover:text-amber-700 transition-colors"
+                      >
+                        {currentBlessing.subcategories.name}
+                      </a>
+                    </li>
+                  </>
+                )}
+              </ol>
+            </nav>
+          </div>
 
-      {/* Content */}
-      <div className="p-6">
-        {/* Meta Information */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6 pb-6 border-b border-gray-200">
-          {blessing.author && (
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>By {blessing.author}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            <span>{new Date(blessing.created_at).toLocaleDateString()}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            <span>{blessing.view_count || 0} views</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Share2 className="w-4 h-4" />
-            <span>{blessing.share_count || 0} shares</span>
-          </div>
-        </div>
+          {/* Content */}
+          <div className="p-8">
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                {currentBlessing.author && (
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    <span>By {currentBlessing.author}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{new Date(currentBlessing.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
 
-        {/* Main Content */}
-        <div className="prose prose-lg max-w-none mb-8">
-          <div className="text-gray-800 leading-relaxed whitespace-pre-wrap">
-            {blessing.content}
-          </div>
-        </div>
-
-        {/* Tags */}
-        {blessing.meta_keywords && (
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Tag className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Tags</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {blessing.meta_keywords.split(',').map((keyword, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors cursor-pointer"
-                  onClick={() => router.push(`/search?q=${encodeURIComponent(keyword.trim())}`)}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyContent}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  title="Copy blessing"
                 >
-                  {keyword.trim()}
-                </span>
-              ))}
+                  {copied ? (
+                    <Check size={16} className="text-green-600 dark:text-green-400" />
+                  ) : (
+                    <Copy size={16} />
+                  )}
+                  <span className="text-sm">{copied ? 'Copied!' : 'Copy'}</span>
+                </button>
+                
+                <button
+                  onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  title="Share blessing"
+                >
+                  <Share2 size={16} />
+                  <span className="text-sm">Share</span>
+                </button>
+                
+                <button
+                  onClick={handleFavorite}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                  disabled={isLoading}
+                >
+                  <Heart 
+                    size={16} 
+                    className={`transition-colors duration-200 ${
+                      isFavorited 
+                        ? 'text-red-500 fill-red-500' 
+                        : 'text-gray-500 dark:text-gray-400'
+                    } ${isLoading ? 'opacity-50' : ''}`}
+                  />
+                  <span className="text-sm">{isFavorited ? 'Favorited' : 'Favorite'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="prose prose-lg max-w-none dark:prose-invert">
+              {/* Quote styling for blessing content */}
+              <blockquote className="relative bg-gray-50 dark:bg-gray-700/50 rounded-xl p-8 mb-8 border-l-4 border-amber-500">
+                <div className="text-2xl text-amber-500 mb-4">"</div>
+                <div className="text-xl leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-medium">
+                  {currentBlessing.content}
+                </div>
+                <div className="text-2xl text-amber-500 text-right mt-4">"</div>
+                {currentBlessing.author && (
+                  <cite className="block mt-6 text-right text-gray-600 dark:text-gray-400 not-italic">
+                    — {currentBlessing.author}
+                  </cite>
+                )}
+              </blockquote>
+            </div>
+
+            {/* Tags */}
+            {currentBlessing.meta_keywords && (
+              <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                <div className="flex items-center gap-2 mb-4">
+                  <Tag className="w-5 h-5 text-amber-500" />
+                  <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">Related Tags</span>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {currentBlessing.meta_keywords.split(',').map((keyword, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-amber-50 dark:hover:bg-gray-500 hover:text-amber-700 dark:hover:text-amber-300 transition-colors cursor-pointer border border-gray-200 dark:border-gray-500"
+                      onClick={() => router.push(`/search?q=${encodeURIComponent(keyword.trim())}`)}
+                    >
+                      {keyword.trim()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Statistics */}
+            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Eye className="w-5 h-5" />
+                <span className="font-medium">{currentBlessing?.view_count || 0} views</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                <Share2 className="w-5 h-5" />
+                <span className="font-medium">{currentBlessing?.share_count || 0} shares</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={handleCopyContent}
+                disabled={isLoading}
+                className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors border border-gray-200 dark:border-gray-600 shadow-sm"
+              >
+                {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+                {copied ? 'Copied!' : 'Copy Text'}
+              </button>
+              
+              <button
+                onClick={() => setIsShareModalOpen(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors shadow-sm"
+              >
+                <Share2 className="w-5 h-5" />
+                Share
+              </button>
+
+              <button
+                onClick={handleFavorite}
+                disabled={isLoading}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-colors shadow-sm ${
+                  isFavorited
+                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800'
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
+                }`}
+              >
+                <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />
+                {isFavorited ? 'Favorited' : 'Add to Favorites'}
+              </button>
             </div>
           </div>
+        </article>
+
+        {/* Share Modal */}
+        {isShareModalOpen && (
+          <ShareButtons
+            blessing={currentBlessing}
+            onClose={() => setIsShareModalOpen(false)}
+          />
         )}
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 pt-6 border-t border-gray-200">
-          <button
-            onClick={handleCopyContent}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            <Copy className="w-4 h-4" />
-            Copy Text
-          </button>
-          
-          <button
-            onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
-          >
-            <Share2 className="w-4 h-4" />
-            Share
-          </button>
-
-          <button
-            onClick={handleFavorite}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              isFavorited
-                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-current' : ''}`} />
-            {isFavorited ? 'Favorited' : 'Add to Favorites'}
-          </button>
-        </div>
       </div>
-
-      {/* Share Modal */}
-      {isShareModalOpen && (
-        <ShareButtons
-          blessing={blessing}
-          onClose={() => setIsShareModalOpen(false)}
-        />
-      )}
-    </article>
+    </div>
   )
 }

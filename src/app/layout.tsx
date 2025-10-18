@@ -80,8 +80,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode
+  modal: React.ReactNode
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${crimsonText.variable}`}>
@@ -106,6 +108,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
+        {modal}
         <Toaster 
           position="top-right"
           toastOptions={{

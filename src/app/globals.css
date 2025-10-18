@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Pacifico&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -48,4 +48,20 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Ensure Pacifico font is applied with debugging */
+.font-pacifico {
+  font-family: 'Pacifico', cursive !important;
+  font-display: swap;
+  font-weight: 400 !important;
+}
+
+/* Debug: Force Pacifico font on specific element */
+span.text-xl.font-pacifico {
+  font-family: 'Pacifico', 'Comic Sans MS', cursive !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }

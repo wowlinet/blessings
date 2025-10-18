@@ -11,6 +11,7 @@ interface BlessingGridProps {
   totalPages: number
   totalCount: number
   categorySlug: string
+  subcategorySlug?: string
 }
 
 export default function BlessingGrid({ 
@@ -18,7 +19,8 @@ export default function BlessingGrid({
   currentPage, 
   totalPages, 
   totalCount,
-  categorySlug 
+  categorySlug,
+  subcategorySlug 
 }: BlessingGridProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -32,7 +34,10 @@ export default function BlessingGrid({
     }
     
     const queryString = params.toString()
-    const url = `/categories/${categorySlug}${queryString ? `?${queryString}` : ''}`
+    const baseUrl = subcategorySlug 
+      ? `/categories/${categorySlug}/${subcategorySlug}`
+      : `/categories/${categorySlug}`
+    const url = `${baseUrl}${queryString ? `?${queryString}` : ''}`
     router.push(url)
   }
 
@@ -84,8 +89,10 @@ export default function BlessingGrid({
         <button
           onClick={() => {
             const params = new URLSearchParams()
-            const url = `/categories/${categorySlug}`
-            router.push(url)
+            const baseUrl = subcategorySlug 
+              ? `/categories/${categorySlug}/${subcategorySlug}`
+              : `/categories/${categorySlug}`
+            router.push(baseUrl)
           }}
           className="px-6 py-2 bg-primary-400 text-white rounded-lg hover:bg-primary-500 transition-colors"
         >
