@@ -23,7 +23,7 @@ interface ShareButtonsProps {
 export default function ShareButtons({ blessing, onClose }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
 
-  const blessingUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://blessyou.today'}/blessings/${blessing.id}`
+  const blessingUrl = `${typeof window !== 'undefined' ? window.location.origin : 'https://blessyou.today'}/blessings/${blessing.slug}`
   const shareText = `"${blessing.content}" - ${blessing.author || 'BlessYou.Today'}`
   const hashtags = blessing.categories ? `#blessings #${blessing.categories.slug.replace('-', '')}` : '#blessings'
 

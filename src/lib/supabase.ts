@@ -118,6 +118,21 @@ export const getBlessingById = async (id: string) => {
   return data
 }
 
+export const getBlessingBySlug = async (slug: string) => {
+  const { data, error } = await supabase
+    .from('blessings')
+    .select(`
+      *,
+      categories (name, slug),
+      subcategories (name, slug)
+    `)
+    .eq('slug', slug)
+    .single()
+  
+  if (error) throw error
+  return data
+}
+
 // Helper function to sanitize search query for PostgreSQL tsquery
 const sanitizeSearchQuery = (query: string): string => {
   // Remove special characters that can cause tsquery syntax errors

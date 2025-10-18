@@ -26,6 +26,7 @@ export interface Blessing {
   category_id: string
   subcategory_id?: string
   title: string
+  slug: string
   content: string
   content_type: 'short' | 'long' | 'image'
   author?: string

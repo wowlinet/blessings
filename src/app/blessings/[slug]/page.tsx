@@ -1,19 +1,19 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getBlessingById } from '@/lib/supabase'
+import { getBlessingBySlug } from '@/lib/supabase'
 import BlessingDetail from '@/components/BlessingDetail'
 import RelatedBlessings from '@/components/RelatedBlessings'
 
 interface BlessingPageProps {
   params: Promise<{
-    id: string
+    slug: string
   }>
 }
 
 export async function generateMetadata({ params }: BlessingPageProps): Promise<Metadata> {
   try {
-    const { id } = await params
-    const blessing = await getBlessingById(id)
+    const { slug } = await params
+    const blessing = await getBlessingBySlug(slug)
     
     if (!blessing) {
       return {
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: BlessingPageProps): Promise<M
         description,
       },
       alternates: {
-        canonical: `/blessings/${blessing.id}`,
+        canonical: `/blessings/${blessing.slug}`,
       },
     }
   } catch (error) {
@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: BlessingPageProps): Promise<M
 
 export default async function BlessingPage({ params }: BlessingPageProps) {
   try {
-    const { id } = await params
-    const blessing = await getBlessingById(id)
+    const { slug } = await params
+    const blessing = await getBlessingBySlug(slug)
     
     if (!blessing) {
       notFound()
