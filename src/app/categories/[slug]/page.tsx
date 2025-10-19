@@ -103,13 +103,15 @@ export async function generateMetadata({ params, searchParams }: CategoryPagePro
     ? category.subcategories?.find(sub => sub.slug === resolvedSearchParams.subcategory)
     : null
 
+  // 优先使用 seo_title，回退到原有逻辑
   const title = subcategory 
-    ? `${subcategory.name} ${category.name} | BlessYou.Today`
-    : `${category.name} | BlessYou.Today`
+    ? (`${subcategory.seo_title} - BlessYou.Today` || `${subcategory.name} ${category.name} - BlessYou.Today`)
+    : (`${category.seo_title} - BlessYou.Today` || `${category.name} | BlessYou.Today`)
   
+  // 优先使用 seo_description，回退到原有逻辑
   const description = subcategory
-    ? `Find heartfelt ${subcategory.name.toLowerCase()} ${category.name.toLowerCase()} blessings. ${subcategory.description}`
-    : `Discover beautiful ${category.name.toLowerCase()} for every occasion. ${category.description}`
+    ? (subcategory.seo_description || `Find heartfelt ${subcategory.name.toLowerCase()} ${category.name.toLowerCase()} blessings. ${subcategory.description}`)
+    : (category.seo_description || `Discover beautiful ${category.name.toLowerCase()} for every occasion. ${category.description}`)
 
   return {
     title,

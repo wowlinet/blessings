@@ -111,8 +111,11 @@ export async function generateMetadata({ params, searchParams }: SubcategoryPage
     }
   }
 
-  const title = `${subcategory.name} ${category.name} | BlessYou.Today`
-  const description = `Find heartfelt ${subcategory.name.toLowerCase()} ${category.name.toLowerCase()} blessings. ${subcategory.description || ''}`
+  // 优先使用 seo_title，回退到原有逻辑
+  const title = `${subcategory.seo_title} - BlessYou.Today` || `${subcategory.name} ${category.name} - BlessYou.Today`
+  
+  // 优先使用 seo_description，回退到原有逻辑
+  const description = subcategory.seo_description || `Find heartfelt ${subcategory.name.toLowerCase()} ${category.name.toLowerCase()} blessings. ${subcategory.description || ''}`
 
   return {
     title,

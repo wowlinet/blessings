@@ -5,6 +5,8 @@ export interface Category {
   description: string
   icon: string
   seo_keywords: string
+  seo_title?: string        // 新增字段
+  seo_description?: string  // 新增字段
   sort_order: number
   created_at: string
   subcategories?: Subcategory[]
@@ -17,6 +19,8 @@ export interface Subcategory {
   slug: string
   description: string
   seo_keywords: string
+  seo_title?: string        // 新增字段
+  seo_description?: string  // 新增字段
   sort_order: number
   created_at: string
 }
