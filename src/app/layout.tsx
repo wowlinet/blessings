@@ -21,11 +21,11 @@ const crimsonText = Crimson_Text({
 
 export const metadata: Metadata = {
   title: {
-    default: 'BlessYou.Today - Heartfelt Blessings for Every Moment',
-    template: '%s | BlessYou.Today'
+    default: '✨ BlessYou.Today — Daily, Holiday & Spiritual Blessings for Every Moment',
+    template: '%s - BlessYou.Today'
   },
-  description: 'Discover thousands of heartfelt blessings, prayers, and inspirational messages for every occasion. From daily blessings to special celebrations, find the perfect words to share love and positivity.',
-  keywords: 'blessings, prayers, inspirational messages, daily blessings, birthday blessings, wedding prayers, religious blessings, holiday blessings, sympathy messages, healing prayers',
+  description: 'Discover heartfelt blessings for every day and occasion — Friday, Sunday, morning, birthday, or special holidays. Find peace, gratitude, and inspiration with BlessYou.Today.',
+  keywords: 'blessings, prayers, inspirational messages',
   authors: [{ name: 'BlessYou.Today' }],
   creator: 'BlessYou.Today',
   publisher: 'BlessYou.Today',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BlessYou.Today - Heartfelt Blessings for Every Moment',
+    title: '✨ BlessYou.Today — Daily, Holiday & Spiritual Blessings for Every Moment',
     description: 'Discover thousands of heartfelt blessings, prayers, and inspirational messages for every occasion.',
     images: ['/og-image.jpg'],
     creator: '@blessyoutoday',
