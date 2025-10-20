@@ -158,10 +158,10 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
 
   const getContentTypeColor = (type: string) => {
     switch (type) {
-      case 'short': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-      case 'long': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-      case 'image': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+      case 'short': return 'bg-green-100 text-green-800'
+      case 'long': return 'bg-blue-100 text-blue-800'
+      case 'image': return 'bg-purple-100 text-purple-800'
+      default: return 'bg-gray-100 text-gray-800'
     }
   }
 
@@ -229,7 +229,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                     <li>/</li>
                     <li>
                       <a 
-                        href={`/categories/${currentBlessing.categories?.slug}?subcategory=${currentBlessing.subcategories.slug}`}
+                        href={`/categories/${currentBlessing.categories?.slug}/${currentBlessing.subcategories.slug}`}
                         className="hover:text-amber-700 transition-colors"
                       >
                         {currentBlessing.subcategories.name}
@@ -261,11 +261,11 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopyContent}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title="Copy blessing"
                 >
                   {copied ? (
-                    <Check size={16} className="text-green-600 dark:text-green-400" />
+                    <Check size={16} className="text-green-600" />
                   ) : (
                     <Copy size={16} />
                   )}
@@ -274,7 +274,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 
                 <button
                   onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title="Share blessing"
                 >
                   <Share2 size={16} />
@@ -283,7 +283,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 
                 <button
                   onClick={handleFavorite}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors duration-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title={isFavorited ? "Remove from favorites" : "Add to favorites"}
                   disabled={isLoading}
                 >
@@ -292,7 +292,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                     className={`transition-colors duration-200 ${
                       isFavorited 
                         ? 'text-red-500 fill-red-500' 
-                        : 'text-gray-500 dark:text-gray-400'
+                        : 'text-gray-500'
                     } ${isLoading ? 'opacity-50' : ''}`}
                   />
                   <span className="text-sm">{isFavorited ? 'Favorited' : 'Favorite'}</span>
@@ -301,16 +301,16 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
             </div>
 
             {/* Main Content */}
-            <div className="prose prose-lg max-w-none dark:prose-invert">
+            <div className="prose prose-lg max-w-none">
               {/* Quote styling for blessing content */}
-              <blockquote className="relative bg-gray-50 dark:bg-gray-700/50 rounded-xl p-8 mb-8 border-l-4 border-amber-500">
+              <blockquote className="relative bg-gray-50 rounded-xl p-8 mb-8 border-l-4 border-amber-500">
                 <div className="text-2xl text-amber-500 mb-4">"</div>
-                <div className="text-xl leading-relaxed text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-medium">
+                <div className="text-xl leading-relaxed text-gray-800 whitespace-pre-wrap font-medium">
                   {currentBlessing.content}
                 </div>
                 <div className="text-2xl text-amber-500 text-right mt-4">"</div>
                 {currentBlessing.author && (
-                  <cite className="block mt-6 text-right text-gray-600 dark:text-gray-400 not-italic">
+                  <cite className="block mt-6 text-right text-gray-600 not-italic">
                     — {currentBlessing.author}
                   </cite>
                 )}
@@ -319,16 +319,16 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
 
             {/* Tags */}
             {currentBlessing.meta_keywords && (
-              <div className="mb-8 p-6 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+              <div className="mb-8 p-6 bg-gray-50 rounded-xl">
                 <div className="flex items-center gap-2 mb-4">
                   <Tag className="w-5 h-5 text-amber-500" />
-                  <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">Related Tags</span>
+                  <span className="text-lg font-semibold text-gray-800">Related Tags</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {currentBlessing.meta_keywords.split(',').map((keyword, index) => (
                     <button
                       key={index}
-                      className="px-4 py-2 bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-amber-50 dark:hover:bg-gray-500 hover:text-amber-700 dark:hover:text-amber-300 transition-colors cursor-pointer border border-gray-200 dark:border-gray-500"
+                      className="px-4 py-2 bg-white text-gray-700 rounded-lg text-sm hover:bg-amber-50 hover:text-amber-700 transition-colors cursor-pointer border border-gray-200"
                       onClick={() => router.push(`/search?q=${encodeURIComponent(keyword.trim())}`)}
                     >
                       {keyword.trim()}
@@ -339,23 +339,23 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
             )}
 
             {/* Statistics */}
-            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 text-gray-600">
                 <Eye className="w-5 h-5" />
                 <span className="font-medium">{currentBlessing?.view_count || 0} views</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-gray-600">
                 <Share2 className="w-5 h-5" />
                 <span className="font-medium">{currentBlessing?.share_count || 0} shares</span>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-gray-200">
               <button
                 onClick={handleCopyContent}
                 disabled={isLoading}
-                className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors border border-gray-200 dark:border-gray-600 shadow-sm"
+                className="flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
               >
                 {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
                 {copied ? 'Copied!' : 'Copy Text'}
@@ -374,8 +374,8 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 disabled={isLoading}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-colors shadow-sm ${
                   isFavorited
-                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-800'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600'
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />

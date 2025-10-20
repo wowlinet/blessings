@@ -33,7 +33,7 @@ export default function TrendingBlessings({ blessings }: TrendingBlessingsProps)
         <div className="text-center">
           <Link
             href="/search"
-            className="inline-flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 dark:bg-amber-600 dark:hover:bg-amber-700 dark:border-amber-500 text-blue-700 dark:text-white px-8 py-3 rounded-full font-medium transition-colors duration-300"
+            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-700 border-amber-500 text-white px-8 py-3 rounded-full font-medium transition-colors duration-300"
           >
             Explore All Blessings
           </Link>
