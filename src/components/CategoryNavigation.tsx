@@ -15,17 +15,17 @@ interface CategoryNavigationProps {
 }
 
 const categoryIcons = {
-  'daily-blessings': Sun,
-  'birthday-blessings': Gift,
-  'wedding-anniversary-blessings': Heart,
-  'religious-blessings': Cross,
+  'daily': Sun,
+  'birthday': Gift,
+  'wedding-anniversary': Heart,
+  'religious': Cross,
   'life-events': GraduationCap,
-  'holiday-blessings': TreePine,
+  'holiday': TreePine,
   'sympathy-healing': Flower2,
 }
 
 const categoryColors = {
-  'daily-blessings': { 
+  'daily': { 
     bg: 'bg-blue-100', 
     text: 'text-blue-600', 
     hover: 'group-hover:bg-blue-200',
@@ -33,7 +33,7 @@ const categoryColors = {
     darkText: 'dark:text-blue-400',
     darkHover: 'dark:group-hover:bg-blue-900/50'
   },
-  'birthday-blessings': { 
+  'birthday': { 
     bg: 'bg-blue-100', 
     text: 'text-blue-600', 
     hover: 'group-hover:bg-blue-200',
@@ -41,7 +41,7 @@ const categoryColors = {
     darkText: 'dark:text-blue-400',
     darkHover: 'dark:group-hover:bg-blue-900/50'
   },
-  'wedding-anniversary-blessings': { 
+  'wedding-anniversary': { 
     bg: 'bg-green-100', 
     text: 'text-green-600', 
     hover: 'group-hover:bg-green-200',
@@ -49,7 +49,7 @@ const categoryColors = {
     darkText: 'dark:text-green-400',
     darkHover: 'dark:group-hover:bg-green-900/50'
   },
-  'holiday-blessings': { 
+  'holiday': { 
     bg: 'bg-orange-100', 
     text: 'text-orange-600', 
     hover: 'group-hover:bg-orange-200',
@@ -73,7 +73,7 @@ const categoryColors = {
     darkText: 'dark:text-yellow-400',
     darkHover: 'dark:group-hover:bg-yellow-900/50'
   },
-  'religious-blessings': { 
+  'religious': { 
     bg: 'bg-emerald-100', 
     text: 'text-emerald-600', 
     hover: 'group-hover:bg-emerald-200',
@@ -115,7 +115,7 @@ export default function CategoryNavigation({ categories }: CategoryNavigationPro
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {categories.map((category) => {
             const IconComponent = categoryIcons[category.slug as keyof typeof categoryIcons] || Sun
-            const colors = categoryColors[category.slug as keyof typeof categoryColors] || categoryColors['daily-blessings']
+            const colors = categoryColors[category.slug as keyof typeof categoryColors] || categoryColors['daily']
             const subcategoryCount = category.subcategories?.length || 0
             
             return (

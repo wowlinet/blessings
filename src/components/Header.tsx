@@ -205,12 +205,12 @@ export default function Header() {
   }
 
   const categories = [
-    { name: 'Daily Blessings', slug: 'daily-blessings', icon: Sun },
-    { name: 'Birthday Blessings', slug: 'birthday-blessings', icon: Gift },
-    { name: 'Wedding & Anniversary', slug: 'wedding-anniversary-blessings', icon: Heart },
-    { name: 'Religious Blessings', slug: 'religious-blessings', icon: Cross },
+    { name: 'Daily Blessings', slug: 'daily', icon: Sun },
+    { name: 'Birthday Blessings', slug: 'birthday', icon: Gift },
+    { name: 'Wedding & Anniversary', slug: 'wedding-anniversary', icon: Heart },
+    { name: 'Religious Blessings', slug: 'religious', icon: Cross },
     { name: 'Life Events', slug: 'life-events', icon: GraduationCap },
-    { name: 'Holiday Blessings', slug: 'holiday-blessings', icon: TreePine },
+    { name: 'Holiday Blessings', slug: 'holiday', icon: TreePine },
     { name: 'Sympathy & Healing', slug: 'sympathy-healing', icon: Flower2 },
   ]
 

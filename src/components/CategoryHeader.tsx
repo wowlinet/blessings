@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 
 const categoryIcons = {
-  'daily-blessings': Sun,
+  'daily': Sun,
   'special-occasions': Gift,
   'love-relationships': Heart,
   'family-friends': Users,
