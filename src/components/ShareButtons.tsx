@@ -119,88 +119,76 @@ export default function ShareButtons({ blessing, onClose }: ShareButtonsProps) {
           )}
         </div>
 
-        {/* Share Buttons with enhanced styling */}
-        <div className="space-y-3">
+        {/* Share Buttons with optimized compact interaction */}
+        <div className="flex flex-row gap-2 justify-center overflow-hidden">
           <button
             onClick={() => handleShare('facebook')}
-            className="group w-full flex items-center gap-4 p-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+            className="group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:w-36 shadow-md"
           >
-            <div className="p-1 bg-white/20 rounded-lg">
-              <Facebook size={20} />
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
+              <Facebook size={18} />
             </div>
-            <span className="font-medium">Share on Facebook</span>
-            <ExternalLink size={16} className="ml-auto opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">Facebook</span>
           </button>
 
           <button
             onClick={() => handleShare('twitter')}
-            className="group w-full flex items-center gap-4 p-4 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+            className="group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:w-36 shadow-md"
           >
-            <div className="p-1 bg-white/20 rounded-lg">
-              <Twitter size={20} />
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
+              <Twitter size={18} />
             </div>
-            <span className="font-medium">Share on Twitter</span>
-            <ExternalLink size={16} className="ml-auto opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">Twitter</span>
           </button>
 
           <button
             onClick={() => handleShare('whatsapp')}
-            className="group w-full flex items-center gap-4 p-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+            className="group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:w-36 shadow-md"
           >
-            <div className="p-1 bg-white/20 rounded-lg">
-              <MessageCircle size={20} />
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
+              <MessageCircle size={18} />
             </div>
-            <span className="font-medium">Share on WhatsApp</span>
-            <ExternalLink size={16} className="ml-auto opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">WhatsApp</span>
           </button>
 
           <button
             onClick={() => handleShare('linkedin')}
-            className="group w-full flex items-center gap-4 p-4 bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+            className="group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:w-36 shadow-md"
           >
-            <div className="p-1 bg-white/20 rounded-lg">
-              <Linkedin size={20} />
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
+              <Linkedin size={18} />
             </div>
-            <span className="font-medium">Share on LinkedIn</span>
-            <ExternalLink size={16} className="ml-auto opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">LinkedIn</span>
           </button>
 
           <button
             onClick={() => handleShare('pinterest')}
-            className="group w-full flex items-center gap-4 p-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] shadow-md"
+            className="group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-lg active:scale-[0.98] active:w-36 shadow-md"
           >
-            <div className="p-1 bg-white/20 rounded-lg">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.373 0 0 5.372 0 12s5.373 12 12 12c6.628 0 12-5.372 12-12S18.628 0 12 0zm0 19c-.721 0-1.418-.109-2.073-.312.286-.465.713-1.227.87-1.835l.437-1.664c.229.436.895.803 1.604.803 2.111 0 3.633-1.941 3.633-4.354 0-2.312-1.888-4.042-4.316-4.042-3.021 0-4.625 2.003-4.625 4.137 0 .695.366 1.56.949 1.836.095.045.146.025.168-.067.017-.063.058-.229.076-.298.025-.093.015-.126-.052-.207-.18-.22-.295-.502-.295-.903 0-1.167.896-2.025 2.067-2.025 1.118 0 1.935.749 1.935 1.816 0 1.194-.528 2.018-1.188 2.018-.364 0-.635-.302-.548-.673.104-.442.307-.92.307-1.24 0-.287-.157-.527-.482-.527-.383 0-.691.387-.691.906 0 .331.115.555.115.555s-.384 1.593-.452 1.879c-.09.38-.057.778-.034 1.126C5.867 18.287 4 15.388 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
               </svg>
             </div>
-            <span className="font-medium">Pin on Pinterest</span>
-            <ExternalLink size={16} className="ml-auto opacity-70 group-hover:opacity-100 transition-opacity" />
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">Pinterest</span>
           </button>
 
           <button
             onClick={handleCopyLink}
-            className={`group w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-md ${
+            className={`group w-12 hover:w-36 flex items-center justify-start overflow-hidden px-3 py-3 rounded-2xl transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] active:w-36 shadow-md ${
               copied 
                 ? 'bg-gradient-to-r from-green-600 to-green-700 text-white' 
                 : 'bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white hover:shadow-lg'
             }`}
           >
-            <div className="p-1 bg-white/20 rounded-lg">
+            <div className="p-1 bg-white/20 rounded-lg flex-shrink-0">
               {copied ? (
-                <Check size={20} className="text-white" />
+                <Check size={18} className="text-white" />
               ) : (
-                <Copy size={20} />
+                <Copy size={18} />
               )}
             </div>
-            <span className="font-medium">{copied ? 'Link Copied!' : 'Copy Link'}</span>
-            {copied && (
-              <div className="ml-auto flex items-center gap-1">
-                <div className="w-2 h-2 bg-white/60 rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse delay-75"></div>
-                <div className="w-2 h-2 bg-white/20 rounded-full animate-pulse delay-150"></div>
-              </div>
-            )}
+            <span className="font-medium text-sm scale-0 group-hover:scale-100 group-active:scale-100 ml-2 whitespace-nowrap transition-all duration-300 ease-in-out origin-left">{copied ? 'Copied!' : 'Copy Link'}</span>
           </button>
         </div>
 

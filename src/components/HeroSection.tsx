@@ -68,7 +68,7 @@ export default function HeroSection({ featuredBlessings }: HeroSectionProps) {
         <div className="flex items-center justify-center gap-4 flex-wrap">
           <button
             onClick={() => setShowShareModal(true)}
-            className="flex items-center gap-2 bg-amber-100/50 hover:bg-amber-100/70 backdrop-blur-sm px-6 py-3 rounded-full transition-all duration-300 border border-amber-200/40 text-amber-800"
+            className="cursor-pointer flex items-center gap-2 bg-amber-100/50 hover:bg-amber-100/70 backdrop-blur-sm px-6 py-3 rounded-full transition-all duration-300 border border-amber-200/40 text-amber-800"
           >
             <Share2 size={18} />
             Share This Blessing
