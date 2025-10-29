@@ -261,7 +261,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopyContent}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title="Copy blessing"
                 >
                   {copied ? (
@@ -274,7 +274,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 
                 <button
                   onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title="Share blessing"
                 >
                   <Share2 size={16} />
@@ -283,7 +283,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 
                 <button
                   onClick={handleFavorite}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200"
                   title={isFavorited ? "Remove from favorites" : "Add to favorites"}
                   disabled={isLoading}
                 >
@@ -355,7 +355,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
               <button
                 onClick={handleCopyContent}
                 disabled={isLoading}
-                className="flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
+                className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-white text-gray-700 rounded-xl hover:bg-gray-50 transition-colors border border-gray-200 shadow-sm"
               >
                 {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
                 {copied ? 'Copied!' : 'Copy Text'}
@@ -363,7 +363,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
               
               <button
                 onClick={() => setIsShareModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors shadow-sm"
+                className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors shadow-sm"
               >
                 <Share2 className="w-5 h-5" />
                 Share
@@ -375,7 +375,7 @@ export default function BlessingDetail({ blessing, id, isModal = false }: Blessi
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-colors shadow-sm ${
                   isFavorited
                     ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    : 'cursor-pointer bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />
