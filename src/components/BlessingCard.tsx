@@ -161,7 +161,7 @@ export default function BlessingCard({ blessing, showCategory = false }: Blessin
         href={`/blessings/${blessing.slug}`}
         className="group block bg-white dark:bg-gray-800 rounded-2xl p-6 card-shadow hover:shadow-lg dark:hover:shadow-gray-900/50 transition-all duration-300 hover:-translate-y-1"
       >
-        <div className="flex items-start justify-between mb-4">
+        <div data-slug={blessing.slug} className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2 flex-wrap">
             <span className={`text-xs px-2 py-1 rounded-full font-medium ${getContentTypeColor(blessing.content_type)}`}>
               {getContentTypeLabel(blessing.content_type)}
