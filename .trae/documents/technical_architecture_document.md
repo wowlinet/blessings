@@ -24,26 +24,28 @@ graph TD
 
 ## 2. Technology Description
 
-- Frontend: Next.js@15 + Tailwind CSS V4 + React@18
-- Backend: Supabase (PostgreSQL + Authentication + Real-time)
-- Deployment: Vercel (recommended for Next.js)
+* Frontend: Next.js\@15 + Tailwind CSS V4 + React\@18
+
+* Backend: Supabase (PostgreSQL + Authentication + Real-time)
+
+* Deployment: Vercel (recommended for Next.js)
 
 ## 3. Route Definitions
 
-| Route | Purpose |
-|-------|---------|
-| / | Home page, displays featured blessings and category navigation |
-| /categories | Category listing page with all available blessing categories |
-| /categories/[slug] | Individual category page showing blessings for specific category |
-| /categories/[slug]/[subcategory] | Subcategory page showing filtered blessings |
-| /search | Search page with advanced filtering and search results |
-| /auth/login | User login page |
-| /auth/register | User registration page |
-| /auth/reset-password | Password reset page |
-| /profile | User profile page with saved blessings and collections |
-| /blessing/[id] | Individual blessing detail page with sharing options |
-| /sitemap.xml | XML sitemap for search engines |
-| /robots.txt | Robots.txt file for search engine crawling instructions |
+| Route                              | Purpose                                                          |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| /                                  | Home page, displays featured blessings and category navigation   |
+| /categories                        | Category listing page with all available blessing categories     |
+| /categories/\[slug]                | Individual category page showing blessings for specific category |
+| /categories/\[slug]/\[subcategory] | Subcategory page showing filtered blessings                      |
+| /search                            | Search page with advanced filtering and search results           |
+| /auth/login                        | User login page                                                  |
+| /auth/register                     | User registration page                                           |
+| /auth/reset-password               | Password reset page                                              |
+| /profile                           | User profile page with saved blessings and collections           |
+| /blessing/\[id]                    | Individual blessing detail page with sharing options             |
+| /sitemap.xml                       | XML sitemap for search engines                                   |
+| /robots.txt                        | Robots.txt file for search engine crawling instructions          |
 
 ## 4. API Definitions
 
@@ -52,6 +54,7 @@ graph TD
 Since we're using Supabase, most API interactions will be handled through the Supabase client SDK. Here are the main data operations:
 
 **Category and Subcategory Operations**
+
 ```typescript
 // Get all categories with subcategories
 const { data: categories } = await supabase
@@ -81,6 +84,7 @@ const { data: blessings } = await supabase
 ```
 
 **Blessing Operations**
+
 ```typescript
 // Get all blessings with pagination
 const { data: blessings } = await supabase
@@ -112,6 +116,7 @@ const { error } = await supabase
 ```
 
 **User Authentication**
+
 ```typescript
 // Register user
 const { data, error } = await supabase.auth.signUp({
@@ -127,6 +132,7 @@ const { data, error } = await supabase.auth.signInWithPassword({
 ```
 
 ### 4.2 SEO & Social Sharing API
+
 ```typescript
 // Dynamic metadata generation for category pages
 export async function generateMetadata({ params }: { params: { slug: string, subcategory?: string } }): Promise<Metadata> {
@@ -207,6 +213,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 ```
 
 **Social Sharing Functions with Pinterest Optimization**
+
 ```typescript
 // Share tracking with category and subcategory context
 const trackShare = async (blessingId: string, platform: string, categorySlug?: string, subcategorySlug?: string) => {
@@ -355,6 +362,7 @@ erDiagram
 ### 5.2 Data Definition Language
 
 **Categories Table**
+
 ```sql
 -- Create categories table
 CREATE TABLE categories (
@@ -388,6 +396,7 @@ INSERT INTO categories (name, slug, description, icon, seo_keywords, sort_order)
 ```
 
 **Subcategories Table**
+
 ```sql
 -- Create subcategories table
 CREATE TABLE subcategories (
@@ -446,6 +455,7 @@ FROM categories WHERE slug = 'birthday-blessings';
 ```
 
 **Enhanced Blessings Table**
+
 ```sql
 -- Create blessings table with category/subcategory support
 CREATE TABLE blessings (
@@ -487,6 +497,7 @@ GRANT ALL PRIVILEGES ON blessings TO authenticated;
 ```
 
 **Enhanced Share Analytics Table**
+
 ```sql
 -- Create share_analytics table with category tracking
 CREATE TABLE share_analytics (
@@ -513,6 +524,7 @@ GRANT ALL PRIVILEGES ON share_analytics TO authenticated;
 ```
 
 **Enhanced Database Functions**
+
 ```sql
 -- Function to get trending blessings by category
 CREATE OR REPLACE FUNCTION get_trending_blessings_by_category(
@@ -592,3 +604,4 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 ```
+

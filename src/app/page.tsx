@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: 'BlessYou.Today',
     images: [
       {
-        url: '/api/og-image/home',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'BlessYou.Today - Beautiful Blessings for Every Occasion',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'BlessYou.Today - Beautiful Blessings for Every Occasion',
     description: 'Discover heartfelt blessings, prayers, and inspirational messages for daily life, birthdays, weddings, holidays, and special moments.',
-    images: ['/api/og-image/home'],
+    images: ['/og-image.jpg'],
   },
 }
 
