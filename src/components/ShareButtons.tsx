@@ -69,7 +69,7 @@ export default function ShareButtons({ blessing, onClose }: ShareButtonsProps) {
     twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(blessingUrl)}&hashtags=${encodeURIComponent(hashtags.replace('#', ''))}`,
     whatsapp: `https://wa.me/?text=${encodeURIComponent(`${shareText}\n\n${blessingUrl}`)}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(blessingUrl)}`,
-    pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(blessingUrl)}&description=${encodeURIComponent(shareText)}&media=${encodeURIComponent(blessing.pinterest_image_url || blessing.og_image_url || '')}`
+    pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(blessingUrl)}&description=${encodeURIComponent(shareText)}&media=${encodeURIComponent(blessing.pinterest_image_url || blessing.og_image_url || 'https://blessyou.today/og-image.jpg')}`
   }
 
   const handleShare = (platform: keyof typeof shareUrls) => {
