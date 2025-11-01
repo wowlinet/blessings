@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { 
-  Search, 
-  Menu, 
-  X, 
-  Heart, 
+import {
+  Search,
+  Menu,
+  X,
+  Heart,
   User,
   Sun,
   Gift,
@@ -20,7 +20,8 @@ import {
   UserPlus,
   LogOut,
   Bookmark,
-  ChevronDown
+  ChevronDown,
+  MessageCircleHeart
 } from 'lucide-react'
 import AuthModal from './AuthModal'
 import { supabase } from '@/lib/supabase'
@@ -231,8 +232,8 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-gray-700 hover:text-primary transition-colors font-medium"
             >
               Home
@@ -260,8 +261,8 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <Link 
-              href="/search" 
+            <Link
+              href="/search"
               className="text-gray-700 hover:text-primary transition-colors font-medium"
             >
               Search
@@ -447,14 +448,14 @@ export default function Header() {
       {isMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-4">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="block text-gray-700 hover:text-primary transition-colors font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               Home
             </Link>
-            
+
             <div>
               <div className="text-gray-700 font-medium mb-2">Categories</div>
               <div className="pl-4 space-y-2">
@@ -474,9 +475,18 @@ export default function Header() {
                 })}
               </div>
             </div>
-            
-            <Link 
-              href="/search" 
+
+            <Link
+              href="/wish/create"
+              className="flex items-center gap-3 text-gray-700 hover:text-primary transition-colors font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <MessageCircleHeart className="w-4 h-4" />
+              Create Wish Wall
+            </Link>
+
+            <Link
+              href="/search"
               className="block text-gray-700 hover:text-primary transition-colors font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
